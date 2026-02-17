@@ -57,6 +57,9 @@
       "expo-sqlite"
     ],
     "scheme": "wine-cellar",
+    "experiments": {
+      "baseUrl": "/ai-wine-cellar/"
+    },
     "extra": {
       "router": {
         "origin": false
