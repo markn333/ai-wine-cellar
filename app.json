@@ -1,0 +1,69 @@
+{
+  "expo": {
+    "name": "Wine Cellar",
+    "slug": "wine-cellar-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#7C3AED"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.wineceller.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "ワインラベルの撮影に使用します",
+        "NSPhotoLibraryUsageDescription": "ワインの写真を保存するために使用します",
+        "NSMicrophoneUsageDescription": "音声でテイスティングノートを記録するために使用します"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#7C3AED"
+      },
+      "package": "com.wineceller.app",
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "ワインラベルの撮影に使用します"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "ワインの写真を保存するために使用します"
+        }
+      ],
+      "expo-sqlite"
+    ],
+    "scheme": "wine-cellar",
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "your-project-id"
+      }
+    }
+  }
+}
