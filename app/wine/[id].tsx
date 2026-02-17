@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, TextInput, Image, Modal, FlatList } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, TextInput, Image, Modal, FlatList, useWindowDimensions } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useWineStore } from '../../src/store/wineStore';
 import { deleteWine, fetchTastingNotes, fetchDrinkingRecords, drinkWine, deleteTastingNote, deleteDrinkingRecord } from '../../src/services/wineApi';
@@ -9,6 +9,7 @@ import { TastingNote, DrinkingRecord, WineImage } from '../../src/types/wine';
 import { formatCellarPosition } from '../../src/utils/cellarHelpers';
 
 export default function WineDetailScreen() {
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const { id } = useLocalSearchParams();
   const wines = useWineStore((state) => state.wines);
   const wine = wines.find((w) => w.id === id);
@@ -526,13 +527,13 @@ export default function WineDetailScreen() {
             showsHorizontalScrollIndicator={false}
             initialScrollIndex={selectedImageIndex}
             getItemLayout={(_, index) => ({
-              length: 400,
-              offset: 400 * index,
+              length: windowWidth,
+              offset: windowWidth * index,
               index,
             })}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <View style={styles.modalImageContainer}>
+              <View style={[styles.modalImageContainer, { width: windowWidth, height: windowHeight }]}>
                 <Image
                   source={{ uri: item.image_url }}
                   style={styles.modalImage}
@@ -647,8 +648,6 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   modalImageContainer: {
-    width: 400,
-    height: 600,
     justifyContent: 'center',
     alignItems: 'center',
   },
