@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, TextInput, Image, Modal, FlatList, useWindowDimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, TextInput, Image, Modal, useWindowDimensions } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useWineStore } from '../../src/store/wineStore';
 import { deleteWine, fetchTastingNotes, fetchDrinkingRecords, drinkWine, deleteTastingNote, deleteDrinkingRecord } from '../../src/services/wineApi';
@@ -511,7 +511,7 @@ export default function WineDetailScreen() {
       animationType="fade"
       onRequestClose={() => setSelectedImageIndex(null)}
     >
-      <View style={styles.modalContainer}>
+      <View style={[styles.modalContainer, { width: windowWidth, height: windowHeight }]}>
         <TouchableOpacity
           style={styles.modalCloseButton}
           onPress={() => setSelectedImageIndex(null)}
@@ -519,29 +519,39 @@ export default function WineDetailScreen() {
           <MaterialCommunityIcons name="close" size={32} color="#fff" />
         </TouchableOpacity>
 
-        {selectedImageIndex !== null && (
-          <FlatList
-            data={wineImages}
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            initialScrollIndex={selectedImageIndex}
-            getItemLayout={(_, index) => ({
-              length: windowWidth,
-              offset: windowWidth * index,
-              index,
-            })}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View style={[styles.modalImageContainer, { width: windowWidth, height: windowHeight }]}>
-                <Image
-                  source={{ uri: item.image_url }}
-                  style={styles.modalImage}
-                  resizeMode="contain"
-                />
-              </View>
-            )}
+        {selectedImageIndex !== null && wineImages[selectedImageIndex] && (
+          <Image
+            source={{ uri: wineImages[selectedImageIndex].image_url }}
+            style={styles.modalImage}
+            resizeMode="contain"
           />
+        )}
+
+        {/* 複数画像の場合は左右ナビゲーション */}
+        {wineImages.length > 1 && selectedImageIndex !== null && (
+          <>
+            {selectedImageIndex > 0 && (
+              <TouchableOpacity
+                style={styles.modalNavLeft}
+                onPress={() => setSelectedImageIndex(selectedImageIndex - 1)}
+              >
+                <MaterialCommunityIcons name="chevron-left" size={48} color="#fff" />
+              </TouchableOpacity>
+            )}
+            {selectedImageIndex < wineImages.length - 1 && (
+              <TouchableOpacity
+                style={styles.modalNavRight}
+                onPress={() => setSelectedImageIndex(selectedImageIndex + 1)}
+              >
+                <MaterialCommunityIcons name="chevron-right" size={48} color="#fff" />
+              </TouchableOpacity>
+            )}
+            <View style={styles.modalIndicator}>
+              <Text style={styles.modalIndicatorText}>
+                {selectedImageIndex + 1} / {wineImages.length}
+              </Text>
+            </View>
+          </>
         )}
       </View>
     </Modal>
@@ -647,13 +657,40 @@ const styles = StyleSheet.create({
     zIndex: 10,
     padding: 8,
   },
-  modalImageContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   modalImage: {
     width: '100%',
     height: '100%',
+  },
+  modalNavLeft: {
+    position: 'absolute',
+    left: 10,
+    top: '50%',
+    zIndex: 10,
+    padding: 8,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    borderRadius: 24,
+  },
+  modalNavRight: {
+    position: 'absolute',
+    right: 10,
+    top: '50%',
+    zIndex: 10,
+    padding: 8,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    borderRadius: 24,
+  },
+  modalIndicator: {
+    position: 'absolute',
+    bottom: 40,
+    alignSelf: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  modalIndicatorText: {
+    color: '#fff',
+    fontSize: 14,
   },
   section: {
     backgroundColor: '#fff',
