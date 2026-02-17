@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Image,
+  Modal,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams } from 'expo-router';
@@ -750,7 +751,12 @@ export default function AddScreen() {
       </View>
 
       {/* 画像ソース選択モーダル */}
-      {showImageSourceModal && (
+      <Modal
+        visible={showImageSourceModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowImageSourceModal(false)}
+      >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>画像を選択</Text>
@@ -779,7 +785,7 @@ export default function AddScreen() {
             </TouchableOpacity>
           </View>
         </View>
-      )}
+      </Modal>
 
       {/* 認識中ローディング */}
       {isRecognizing && (
