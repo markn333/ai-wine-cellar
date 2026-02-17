@@ -22,4 +22,19 @@ config.resolver.extraNodeModules = {
   'fs': path.resolve(__dirname, 'src/stubs/empty.js'),
 };
 
+// 本番ビルド時に関数名を保持する
+// expo-font の ExpoFontLoader.web.js が createExpoFontLoader 関数名を
+// registerWebModule に渡すため、Terser による名前削除を防ぐ必要がある
+config.transformer.minifierConfig = {
+  ...config.transformer.minifierConfig,
+  compress: {
+    ...config.transformer.minifierConfig?.compress,
+    keep_fnames: true,
+  },
+  mangle: {
+    ...config.transformer.minifierConfig?.mangle,
+    keep_fnames: true,
+  },
+};
+
 module.exports = config;
